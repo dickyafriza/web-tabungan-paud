@@ -40,7 +40,7 @@
                                         <input type="text" class="form-control" name="tempat_lahir" placeholder="Tempat Lahir" value="{{ isset($siswa) ? $siswa->tempat_lahir : old('tempat_lahir') }}">
                                     </div>
                                     <div class="col-6">
-                                        <input type="text" data-toggle="datepicker" class="form-control" name="tanggal_lahir" placeholder="Tanggal Lahir" value="{{ isset($siswa) ? $siswa->tanggal_lahir : old('tanggal_lahir') }}">
+                                        <input type="date" data-toggle="datepicker" class="form-control" name="tanggal_lahir" placeholder="Tanggal Lahir" value="{{ isset($siswa) ? $siswa->tanggal_lahir : old('tanggal_lahir') }}">
                                     </div>
                                 </div>
                                 
