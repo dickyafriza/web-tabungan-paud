@@ -1,49 +1,48 @@
-FROM php:8.4-fpm
+# syntax=docker/dockerfile:1
+FROM php:8.2-fpm
 
-# Arguments defined in docker-compose.yml
-ARG user
-ARG uid
+# set working dir
+WORKDIR /var/www/html
 
-ENV TZ=Asia/Jakarta
-
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# Install system dependencies
-RUN apt-get update && apt-get dist-upgrade -y && \ 
-    apt-get install -y \
+# system deps
+RUN apt-get update && apt-get install -y \
     git \
-    libcurl4-gnutls-dev \
     curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
     zip \
     unzip \
+    libzip-dev \
+    libonig-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libxml2-dev \
     libpq-dev \
-    libgmp-dev \
-    vim-nox \
-    iputils-ping \
-    mariadb-client \
-    postgresql-client \
-    sudo
+    gnupg2 \
+    ca-certificates \
+    procps \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+# php extensions
+RUN docker-php-ext-install pdo pdo_mysql zip exif pcntl bcmath gd
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo mysqli pdo_mysql mbstring exif pcntl bcmath gd intl zip pgsql pdo_pgsql curl xml
+# install composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-COPY --from=composer:2.5.5 /usr/bin/composer /usr/bin/composer
+# nodejs (optional for npm / vite)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && npm i -g npm@latest
 
-# Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u $uid -d /home/$user $user && echo "$user:$user" | chpasswd && adduser $user sudo
-RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
+# copy existing application code
+COPY . /var/www/html
 
-RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+# set permissions (will be adjusted on container start if needed)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage /var/www/html/bootstrap/cache || true
 
-# Set working directory
-WORKDIR /var/www
+# expose php-fpm port (nginx will connect to it)
+EXPOSE 9000
 
-USER $user
+# default command
+CMD ["php-fpm"]

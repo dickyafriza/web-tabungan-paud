@@ -565,6 +565,7 @@ class ComposerStaticInit513966aa261e4c42c869f9b34aaf5d91
         'App\\Exports\\SppExport' => __DIR__ . '/../..' . '/app/Exports/SppExport.php',
         'App\\Exports\\SppSiswaExport' => __DIR__ . '/../..' . '/app/Exports/SppSiswaExport.php',
         'App\\Exports\\TabunganExport' => __DIR__ . '/../..' . '/app/Exports/TabunganExport.php',
+        'App\\Exports\\TabunganKelasExport' => __DIR__ . '/../..' . '/app/Exports/TabunganKelasExport.php',
         'App\\Exports\\TabunganSiswaExport' => __DIR__ . '/../..' . '/app/Exports/TabunganSiswaExport.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',

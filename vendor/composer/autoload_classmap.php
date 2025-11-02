@@ -14,6 +14,7 @@ return array(
     'App\\Exports\\SppExport' => $baseDir . '/app/Exports/SppExport.php',
     'App\\Exports\\SppSiswaExport' => $baseDir . '/app/Exports/SppSiswaExport.php',
     'App\\Exports\\TabunganExport' => $baseDir . '/app/Exports/TabunganExport.php',
+    'App\\Exports\\TabunganKelasExport' => $baseDir . '/app/Exports/TabunganKelasExport.php',
     'App\\Exports\\TabunganSiswaExport' => $baseDir . '/app/Exports/TabunganSiswaExport.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
     'App\\Http\\Controllers\\Auth\\LoginController' => $baseDir . '/app/Http/Controllers/Auth/LoginController.php',
