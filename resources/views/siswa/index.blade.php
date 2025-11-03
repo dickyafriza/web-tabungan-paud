@@ -107,26 +107,47 @@
 @endsection
 @section('js')
 <script>
-    require(['jquery', 'sweetalert'], function ($, sweetalert) {
-        $(document).ready(function () {
+    // require(['jquery', 'sweetalert'], function ($, sweetalert) {
+    //     $(document).ready(function () {
 
-            $(document).on('click','.btn-delete', function(){
-                formid = $(this).attr('data-id');
-                swal({
-                    title: 'Are you sure to delete?',
-                    text: 'items that have been deleted cannot be returned',
-                    dangerMode: true,
-                    buttons: {
-                        cancel: true,
-                        confirm: true,
-                    },
-                }).then((result) => {
-                    if (result) {
-                        $('#form-' + formid).submit();
-                    }
-                })
-            })
+    //         $(document).on('click','.btn-delete', function(){
+    //             formid = $(this).attr('data-id');
+    //             swal({
+    //                 title: 'Are you sure to delete?',
+    //                 text: 'items that have been deleted cannot be returned',
+    //                 dangerMode: true,
+    //                 buttons: {
+    //                     cancel: true,
+    //                     confirm: true,
+    //                 },
+    //             }).then((result) => {
+    //                 if (result) {
+    //                     $('#form-' + formid).submit();
+    //                 }
+    //             })
+    //         })
 
+    //     });
+    // });
+    $(document).ready(function() {
+        console.log("Bootstrap loaded:", typeof $.fn.tooltip); // Harusnya "function"
+
+        // Tombol hapus
+        $(document).on('click', '.btn-delete', function() {
+            const formid = $(this).attr('data-id');
+            swal({
+                title: 'Anda yakin ingin menghapus?',
+                text: 'Siswa yang dihapus tidak dapat dikembalikan',
+                dangerMode: true,
+                buttons: {
+                    cancel: true,
+                    confirm: true,
+                },
+            }).then((result) => {
+                if (result) {
+                    $('#form-' + formid).submit();
+                }
+            });
         });
     });
 </script>
