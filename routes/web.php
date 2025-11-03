@@ -83,6 +83,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('export-mutasi', 'TabunganController@export')->name('tabungan.export');
     Route::get('cetak-tabungan-siswa/{siswa}', 'TabunganController@cetak')->name('tabungan.cetak');
     Route::get('export-tabungan/{siswa}', 'TabunganController@siswaexport')->name('tabungan.siswa.export');
+    Route::delete('/tabungan/{id}/hapus', 'TabunganController@destroy')->name('tabungan.destroy');
 
     //Keuangan
     Route::get('keuangan', 'KeuanganController@index')->name('keuangan.index');
