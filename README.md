@@ -7,7 +7,7 @@ Please check the official laravel installation guide for server requirements bef
 
 Clone the repository
 
-    git clone https://github.com/ajikamaludin/spp-paud.git
+    git clone https://github.com/dickyafriza/web-tabungan-paud.git
 
 Switch to the repo folder
 
