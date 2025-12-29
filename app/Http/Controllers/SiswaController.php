@@ -21,12 +21,23 @@ class SiswaController extends Controller
      */
     public function index(Request $request)
     {
-        $q = $request->get('q');
-        if ($q == null) {
-            $siswa = Siswa::orderBy('created_at', 'desc')->paginate(15);
-        } else {
-            $siswa = Siswa::where('nama', 'like', '%' . $q . '%')->orderBy('created_at', 'desc')->paginate(15);
-        }
+        $query = Siswa::query();
+
+        // Apply filters (kelas_id, jenis_kelamin, is_yatim)
+        $query = \App\Helper\QueryHelper::applyFilters($query, $request, [
+            'kelas_id', 'jenis_kelamin', 'is_yatim'
+        ]);
+
+        // Apply search (nama, nama_wali, alamat)
+        $query = \App\Helper\QueryHelper::applySearch($query, $request, [
+            'nama', 'nama_wali', 'alamat'
+        ]);
+
+        // Apply sorting (default: created_at desc)
+        $query = \App\Helper\QueryHelper::applySort($query, $request, 'created_at', 'desc');
+
+        $siswa = $query->paginate(15);
+        
         return view('siswa.index', [
             'siswa' => $siswa->appends($request->except('page'))
         ]);

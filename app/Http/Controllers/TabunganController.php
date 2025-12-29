@@ -13,13 +13,28 @@ use App\Exports\TabunganSiswaExport;
 
 class TabunganController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $siswa = Siswa::orderBy('created_at', 'desc')->get();
-        $tabungan = Tabungan::orderBy('created_at', 'desc')->paginate(10);
+        
+        $query = Tabungan::query();
+
+        // Apply filters (siswa_id, tipe)
+        $query = \App\Helper\QueryHelper::applyFilters($query, $request, [
+            'siswa_id', 'tipe'
+        ]);
+
+        // Apply date range filter
+        $query = \App\Helper\QueryHelper::applyDateRange($query, $request, 'created_at');
+
+        // Apply sorting
+        $query = \App\Helper\QueryHelper::applySort($query, $request, 'created_at', 'desc');
+
+        $tabungan = $query->paginate(10);
+        
         return view('tabungan.index', [
             'siswa' => $siswa,
-            'tabungan' => $tabungan,
+            'tabungan' => $tabungan->appends($request->except('page')),
         ]);
     }
 
