@@ -29,7 +29,7 @@ endpoints:
         name: email
         description: 'Must be a valid email address.'
         required: true
-        example: qkunze@example.com
+        example: gbailey@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -40,15 +40,15 @@ endpoints:
         name: password
         description: 'Must be at least 6 characters.'
         required: true
-        example: 'Z5ij-e/dl4m{o,'
+        example: '+-0pBNvYgxwmi/#iw'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      email: qkunze@example.com
-      password: 'Z5ij-e/dl4m{o,'
+      email: gbailey@example.net
+      password: '+-0pBNvYgxwmi/#iw'
     fileParameters: []
     responses: []
     responseFields: []
@@ -84,7 +84,7 @@ endpoints:
         name: name
         description: 'Must not be greater than 255 characters.'
         required: true
-        example: vmqeopfuudtdsufvyvddq
+        example: b
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -95,7 +95,7 @@ endpoints:
         name: email
         description: 'Must be a valid email address. Must not be greater than 255 characters.'
         required: true
-        example: kunde.eloisa@example.com
+        example: zbailey@example.net
         type: string
         enumValues: []
         exampleWasSpecified: false
@@ -106,16 +106,16 @@ endpoints:
         name: password
         description: 'Must be at least 6 characters.'
         required: true
-        example: '4[*UyPJ"}6'
+        example: '-0pBNvYgxw'
         type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      name: vmqeopfuudtdsufvyvddq
-      email: kunde.eloisa@example.com
-      password: '4[*UyPJ"}6'
+      name: b
+      email: zbailey@example.net
+      password: '-0pBNvYgxw'
     fileParameters: []
     responses: []
     responseFields: []
@@ -291,14 +291,14 @@ endpoints:
         name: siswa
         description: ''
         required: false
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      siswa: 1
+      siswa: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -307,8 +307,11 @@ endpoints:
     responses:
       -
         custom: []
-        status: 200
-        content: '{"saldo":1850000,"sal":"1.850.000"}'
+        status: 404
+        content: |-
+          {
+              "message": "No query results for model [App\\Models\\Siswa] 16"
+          }
         headers:
           cache-control: 'no-cache, private'
           content-type: application/json
@@ -344,14 +347,14 @@ endpoints:
         name: siswa
         description: ''
         required: false
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      siswa: 1
+      siswa: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -387,14 +390,14 @@ endpoints:
         name: siswa
         description: ''
         required: false
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      siswa: 1
+      siswa: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -403,10 +406,10 @@ endpoints:
     responses:
       -
         custom: []
-        status: 500
+        status: 404
         content: |-
           {
-              "message": "Server Error"
+              "message": "No query results for model [App\\Models\\Siswa] 16"
           }
         headers:
           cache-control: 'no-cache, private'
@@ -443,14 +446,14 @@ endpoints:
         name: siswa
         description: ''
         required: false
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         deprecated: false
     cleanUrlParameters:
-      siswa: 1
+      siswa: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []

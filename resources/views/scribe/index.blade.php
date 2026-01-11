@@ -112,7 +112,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: December 29, 2025</li>
+        <li>Last updated: January 5, 2026</li>
     </ul>
 </div>
 
@@ -152,8 +152,8 @@ You can switch the language used with the tabs at the top right (or from the nav
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"email\": \"qkunze@example.com\",
-    \"password\": \"Z5ij-e\\/dl4m{o,\"
+    \"email\": \"gbailey@example.net\",
+    \"password\": \"+-0pBNvYgxwmi\\/#iw\"
 }"
 </code></pre></div>
 
@@ -169,8 +169,8 @@ const headers = {
 };
 
 let body = {
-    "email": "qkunze@example.com",
-    "password": "Z5ij-e\/dl4m{o,"
+    "email": "gbailey@example.net",
+    "password": "+-0pBNvYgxwmi\/#iw"
 };
 
 fetch(url, {
@@ -262,10 +262,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-auth-login"
-               value="qkunze@example.com"
+               value="gbailey@example.net"
                data-component="body">
     <br>
-<p>Must be a valid email address. Example: <code>qkunze@example.com</code></p>
+<p>Must be a valid email address. Example: <code>gbailey@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -274,10 +274,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="password"                data-endpoint="POSTapi-auth-login"
-               value="Z5ij-e/dl4m{o,"
+               value="+-0pBNvYgxwmi/#iw"
                data-component="body">
     <br>
-<p>Must be at least 6 characters. Example: <code>Z5ij-e/dl4m{o,</code></p>
+<p>Must be at least 6 characters. Example: <code>+-0pBNvYgxwmi/#iw</code></p>
         </div>
         </form>
 
@@ -298,9 +298,9 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"name\": \"vmqeopfuudtdsufvyvddq\",
-    \"email\": \"kunde.eloisa@example.com\",
-    \"password\": \"4[*UyPJ\\\"}6\"
+    \"name\": \"b\",
+    \"email\": \"zbailey@example.net\",
+    \"password\": \"-0pBNvYgxw\"
 }"
 </code></pre></div>
 
@@ -316,9 +316,9 @@ const headers = {
 };
 
 let body = {
-    "name": "vmqeopfuudtdsufvyvddq",
-    "email": "kunde.eloisa@example.com",
-    "password": "4[*UyPJ\"}6"
+    "name": "b",
+    "email": "zbailey@example.net",
+    "password": "-0pBNvYgxw"
 };
 
 fetch(url, {
@@ -410,10 +410,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="name"                data-endpoint="POSTapi-auth-register"
-               value="vmqeopfuudtdsufvyvddq"
+               value="b"
                data-component="body">
     <br>
-<p>Must not be greater than 255 characters. Example: <code>vmqeopfuudtdsufvyvddq</code></p>
+<p>Must not be greater than 255 characters. Example: <code>b</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -422,10 +422,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="email"                data-endpoint="POSTapi-auth-register"
-               value="kunde.eloisa@example.com"
+               value="zbailey@example.net"
                data-component="body">
     <br>
-<p>Must be a valid email address. Must not be greater than 255 characters. Example: <code>kunde.eloisa@example.com</code></p>
+<p>Must be a valid email address. Must not be greater than 255 characters. Example: <code>zbailey@example.net</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -434,10 +434,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="password"                data-endpoint="POSTapi-auth-register"
-               value="4[*UyPJ"}6"
+               value="-0pBNvYgxw"
                data-component="body">
     <br>
-<p>Must be at least 6 characters. Example: <code>4[*UyPJ"}6</code></p>
+<p>Must be at least 6 characters. Example: <code>-0pBNvYgxw</code></p>
         </div>
         </form>
 
@@ -928,14 +928,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8080/api/saldo/1" \
+    --get "http://localhost:8080/api/saldo/16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8080/api/saldo/1"
+    "http://localhost:8080/api/saldo/16"
 );
 
 const headers = {
@@ -952,7 +952,7 @@ fetch(url, {
 
 <span id="example-responses-GETapi-saldo--siswa--">
             <blockquote>
-            <p>Example response (200):</p>
+            <p>Example response (404):</p>
         </blockquote>
                 <details class="annotation">
             <summary style="cursor: pointer;">
@@ -965,8 +965,7 @@ x-ratelimit-remaining: 57
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;saldo&quot;: 1850000,
-    &quot;sal&quot;: &quot;1.850.000&quot;
+    &quot;message&quot;: &quot;No query results for model [App\\Models\\Siswa] 16&quot;
 }</code>
  </pre>
     </span>
@@ -1049,10 +1048,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="siswa"                data-endpoint="GETapi-saldo--siswa--"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>Example: <code>1</code></p>
+<p>Example: <code>16</code></p>
             </div>
                     </form>
 
@@ -1069,14 +1068,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost:8080/api/menabung/1" \
+    "http://localhost:8080/api/menabung/16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8080/api/menabung/1"
+    "http://localhost:8080/api/menabung/16"
 );
 
 const headers = {
@@ -1172,10 +1171,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="siswa"                data-endpoint="POSTapi-menabung--siswa--"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>Example: <code>1</code></p>
+<p>Example: <code>16</code></p>
             </div>
                     </form>
 
@@ -1192,14 +1191,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost:8080/api/tagihan/1" \
+    --get "http://localhost:8080/api/tagihan/16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8080/api/tagihan/1"
+    "http://localhost:8080/api/tagihan/16"
 );
 
 const headers = {
@@ -1216,7 +1215,7 @@ fetch(url, {
 
 <span id="example-responses-GETapi-tagihan--siswa--">
             <blockquote>
-            <p>Example response (500):</p>
+            <p>Example response (404):</p>
         </blockquote>
                 <details class="annotation">
             <summary style="cursor: pointer;">
@@ -1229,7 +1228,7 @@ x-ratelimit-remaining: 56
  </code></pre></details>         <pre>
 
 <code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Server Error&quot;
+    &quot;message&quot;: &quot;No query results for model [App\\Models\\Siswa] 16&quot;
 }</code>
  </pre>
     </span>
@@ -1312,10 +1311,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="siswa"                data-endpoint="GETapi-tagihan--siswa--"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>Example: <code>1</code></p>
+<p>Example: <code>16</code></p>
             </div>
                     </form>
 
@@ -1332,14 +1331,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request POST \
-    "http://localhost:8080/api/transaksi-spp/1" \
+    "http://localhost:8080/api/transaksi-spp/16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost:8080/api/transaksi-spp/1"
+    "http://localhost:8080/api/transaksi-spp/16"
 );
 
 const headers = {
@@ -1435,10 +1434,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="siswa"                data-endpoint="POSTapi-transaksi-spp--siswa--"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>Example: <code>1</code></p>
+<p>Example: <code>16</code></p>
             </div>
                     </form>
 
