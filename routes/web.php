@@ -16,8 +16,13 @@ use Illuminate\Support\Facades\Auth;
 // Route::prefix('spp')->group(function(){
 Auth::routes();
 
+// Public route - Landing page
+Route::get('/', function () {
+    return view('landing');
+})->name('landing');
+
 Route::middleware(['auth:web'])->group(function () {
-    Route::get('/', 'HomeController@index')->name('web.index');
+    Route::get('/dashboard', 'HomeController@index')->name('web.index');
     Route::get('buku-panduan', function () {
         return view('panduan.buku');
     })->name('buku.panduan');

@@ -1,0 +1,738 @@
+{
+    "info": {
+        "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "name": "Web Tabungan PAUD API",
+        "description": "Dokumentasi API untuk Sistem Tabungan PAUD.\n\nAPI ini menyediakan endpoint untuk:\n- Authentication (JWT)\n- Manajemen Saldo Siswa\n- Transaksi Menabung\n- Pembayaran SPP\n\n**Base URL:** `http://localhost:8001/api`\n\n**Authentication:** Bearer Token (JWT)",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8001/api"
+        },
+        {
+            "key": "token",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "Authentication",
+            "description": "Endpoint untuk autentikasi pengguna menggunakan JWT (JSON Web Token)",
+            "item": [
+                {
+                    "name": "Register",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Admin PAUD\",\n    \"email\": \"admin@paud.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Mendaftarkan pengguna baru ke sistem.\n\n**Request Body:**\n- `name` (required): Nama lengkap pengguna\n- `email` (required): Email unik pengguna\n- `password` (required): Password minimal 6 karakter\n- `password_confirmation` (required): Konfirmasi password"
+                    },
+                    "response": [
+                        {
+                            "name": "Success - 200 OK",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"name\": \"Admin PAUD\",\n    \"email\": \"admin@paud.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "auth",
+                                        "register"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"Admin PAUD\",\n        \"email\": \"admin@paud.com\",\n        \"created_at\": \"2026-01-11T16:00:00.000000Z\",\n        \"updated_at\": \"2026-01-11T16:00:00.000000Z\"\n    }\n}"
+                        },
+                        {
+                            "name": "Validation Error - 422",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"name\": \"\",\n    \"email\": \"invalid-email\",\n    \"password\": \"123\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "auth",
+                                        "register"
+                                    ]
+                                }
+                            },
+                            "status": "Unprocessable Entity",
+                            "code": 422,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"name\": [\"The name field is required.\"],\n    \"email\": [\"The email must be a valid email address.\"],\n    \"password\": [\"The password must be at least 6 characters.\"]\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.access_token) {",
+                                    "    pm.collectionVariables.set('token', jsonData.access_token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@paud.com\",\n    \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login untuk mendapatkan JWT token.\n\n**Request Body:**\n- `email` (required): Email pengguna\n- `password` (required): Password pengguna\n\n**Response:** Mengembalikan JWT access token yang digunakan untuk mengakses endpoint yang protected."
+                    },
+                    "response": [
+                        {
+                            "name": "Success - 200 OK",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"admin@paud.com\",\n    \"password\": \"password123\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "auth",
+                                        "login"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwMDEvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MDQ5NjQ4MDAsImV4cCI6MTcwNDk2ODQwMCwibmJmIjoxNzA0OTY0ODAwLCJqdGkiOiJhYmNkZWZnMTIzNDU2Nzg5Iiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.abc123\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"Admin PAUD\",\n        \"email\": \"admin@paud.com\",\n        \"created_at\": \"2026-01-11T16:00:00.000000Z\",\n        \"updated_at\": \"2026-01-11T16:00:00.000000Z\"\n    }\n}"
+                        },
+                        {
+                            "name": "Unauthorized - 401",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"email\": \"admin@paud.com\",\n    \"password\": \"wrongpassword\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "auth",
+                                        "login"
+                                    ]
+                                }
+                            },
+                            "status": "Unauthorized",
+                            "code": 401,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"error\": \"Unauthorized\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Get Current User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "me"
+                            ]
+                        },
+                        "description": "Mendapatkan informasi pengguna yang sedang login.\n\n**Authorization:** Bearer Token (required)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success - 200 OK",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/auth/me",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "auth",
+                                        "me"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"id\": 1,\n    \"name\": \"Admin PAUD\",\n    \"email\": \"admin@paud.com\",\n    \"email_verified_at\": null,\n    \"created_at\": \"2026-01-11T16:00:00.000000Z\",\n    \"updated_at\": \"2026-01-11T16:00:00.000000Z\"\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Refresh Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.access_token) {",
+                                    "    pm.collectionVariables.set('token', jsonData.access_token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/refresh",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Memperbarui JWT token yang akan expired.\n\n**Authorization:** Bearer Token (required)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success - 200 OK",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/auth/refresh",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "auth",
+                                        "refresh"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.newtoken...\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600,\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"Admin PAUD\",\n        \"email\": \"admin@paud.com\"\n    }\n}"
+                        }
+                    ]
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout dan invalidate JWT token.\n\n**Authorization:** Bearer Token (required)"
+                    },
+                    "response": [
+                        {
+                            "name": "Success - 200 OK",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/auth/logout",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "auth",
+                                        "logout"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"message\": \"Successfully logged out\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Saldo Siswa",
+            "description": "Endpoint untuk mengecek saldo tabungan siswa",
+            "item": [
+                {
+                    "name": "Get Saldo Siswa",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/saldo/:siswa_id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "saldo",
+                                ":siswa_id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "siswa_id",
+                                    "value": "1",
+                                    "description": "ID Siswa (optional)"
+                                }
+                            ]
+                        },
+                        "description": "Mendapatkan informasi saldo tabungan siswa.\n\n**Parameters:**\n- `siswa_id` (path, optional): ID siswa yang ingin dicek saldonya\n\n**Rate Limit:** 60 requests per minute"
+                    },
+                    "response": [
+                        {
+                            "name": "Success - 200 OK",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/saldo/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "saldo",
+                                        "1"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"siswa\": {\n        \"id\": 1,\n        \"nama\": \"Ahmad Fauzi\",\n        \"nis\": \"2024001\",\n        \"kelas\": {\n            \"id\": 1,\n            \"nama\": \"TK A\"\n        }\n    },\n    \"saldo\": 500000,\n    \"formatted_saldo\": \"Rp 500.000\"\n}"
+                        },
+                        {
+                            "name": "Not Found - 404",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/saldo/999",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "saldo",
+                                        "999"
+                                    ]
+                                }
+                            },
+                            "status": "Not Found",
+                            "code": 404,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"message\": \"Siswa tidak ditemukan\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tabungan",
+            "description": "Endpoint untuk transaksi menabung dan penarikan tabungan",
+            "item": [
+                {
+                    "name": "Menabung / Penarikan",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"siswa_id\": 1,\n    \"jumlah\": \"50000\",\n    \"tipe\": \"in\",\n    \"keperluan\": \"Tabungan harian\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/menabung/:siswa_id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "menabung",
+                                ":siswa_id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "siswa_id",
+                                    "value": "1",
+                                    "description": "ID Siswa"
+                                }
+                            ]
+                        },
+                        "description": "Melakukan transaksi menabung atau penarikan tabungan siswa.\n\n**Parameters:**\n- `siswa_id` (path): ID siswa\n\n**Request Body:**\n- `siswa_id` (required): ID siswa\n- `jumlah` (required): Jumlah uang (format: angka atau dengan pemisah ribuan)\n- `tipe` (required): Tipe transaksi - `in` untuk menabung, `out` untuk penarikan\n- `keperluan` (optional): Keterangan/catatan transaksi\n\n**Rate Limit:** 60 requests per minute"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Menabung - 200 OK",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"siswa_id\": 1,\n    \"jumlah\": \"50000\",\n    \"tipe\": \"in\",\n    \"keperluan\": \"Tabungan harian\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/menabung/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "menabung",
+                                        "1"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"msg\": \"Berhasil melakukan transaksi\"\n}"
+                        },
+                        {
+                            "name": "Success Penarikan - 200 OK",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"siswa_id\": 1,\n    \"jumlah\": \"25000\",\n    \"tipe\": \"out\",\n    \"keperluan\": \"Penarikan untuk keperluan sekolah\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/menabung/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "menabung",
+                                        "1"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"msg\": \"Berhasil melakukan transaksi\"\n}"
+                        },
+                        {
+                            "name": "Gagal - Saldo Tidak Cukup",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"siswa_id\": 1,\n    \"jumlah\": \"1000000\",\n    \"tipe\": \"out\",\n    \"keperluan\": \"Penarikan besar\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/menabung/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "menabung",
+                                        "1"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"msg\": \"Transaksi gagal\"\n}"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Tagihan SPP",
+            "description": "Endpoint untuk manajemen tagihan dan pembayaran SPP",
+            "item": [
+                {
+                    "name": "Get Tagihan Siswa",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/tagihan/:siswa_id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "tagihan",
+                                ":siswa_id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "siswa_id",
+                                    "value": "1",
+                                    "description": "ID Siswa"
+                                }
+                            ]
+                        },
+                        "description": "Mendapatkan daftar tagihan SPP siswa.\n\n**Parameters:**\n- `siswa_id` (path): ID siswa\n\n**Rate Limit:** 60 requests per minute"
+                    },
+                    "response": [
+                        {
+                            "name": "Success - 200 OK",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/tagihan/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "tagihan",
+                                        "1"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "[\n    {\n        \"id\": 1,\n        \"nama\": \"SPP Januari 2026\",\n        \"jumlah\": 150000,\n        \"wajib_semua\": \"1\",\n        \"kelas_id\": null,\n        \"created_at\": \"2026-01-01T00:00:00.000000Z\"\n    },\n    {\n        \"id\": 2,\n        \"nama\": \"SPP Februari 2026\",\n        \"jumlah\": 150000,\n        \"wajib_semua\": \"1\",\n        \"kelas_id\": null,\n        \"created_at\": \"2026-02-01T00:00:00.000000Z\"\n    }\n]"
+                        }
+                    ]
+                },
+                {
+                    "name": "Bayar SPP",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"tagihan_id\": 1,\n    \"jumlah\": \"150000\",\n    \"diskon\": 0,\n    \"via\": \"tunai\",\n    \"keterangan\": \"Pembayaran SPP Januari\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/transaksi-spp/:siswa_id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "transaksi-spp",
+                                ":siswa_id"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "siswa_id",
+                                    "value": "1",
+                                    "description": "ID Siswa"
+                                }
+                            ]
+                        },
+                        "description": "Melakukan pembayaran SPP siswa.\n\n**Parameters:**\n- `siswa_id` (path): ID siswa\n\n**Request Body:**\n- `tagihan_id` (required): ID tagihan yang dibayar\n- `jumlah` (required): Jumlah pembayaran\n- `diskon` (optional): Potongan harga (default: 0)\n- `via` (required): Metode pembayaran - `tunai` atau `tabungan`\n- `keterangan` (optional): Catatan pembayaran\n\n**Rate Limit:** 60 requests per minute"
+                    },
+                    "response": [
+                        {
+                            "name": "Success Tunai - 200 OK",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"tagihan_id\": 1,\n    \"jumlah\": \"150000\",\n    \"diskon\": 0,\n    \"via\": \"tunai\",\n    \"keterangan\": \"Pembayaran SPP Januari\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/transaksi-spp/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "transaksi-spp",
+                                        "1"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"msg\": \"transaksi berhasil dilakukan\"\n}"
+                        },
+                        {
+                            "name": "Success via Tabungan - 200 OK",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"tagihan_id\": 1,\n    \"jumlah\": \"150000\",\n    \"diskon\": 0,\n    \"via\": \"tabungan\",\n    \"keterangan\": \"Pembayaran SPP menggunakan tabungan\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/transaksi-spp/1",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "transaksi-spp",
+                                        "1"
+                                    ]
+                                }
+                            },
+                            "status": "OK",
+                            "code": 200,
+                            "_postman_previewlanguage": "json",
+                            "body": "{\n    \"msg\": \"transaksi berhasil dilakukan\"\n}"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
