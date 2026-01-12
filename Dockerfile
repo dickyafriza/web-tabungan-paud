@@ -22,23 +22,25 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite zip exif pcntl bcmath gd
 
 # Enable Apache mod_rewrite
-RUN a2enmod rewrite
+RUN a2enmod rewrite headers
 
-# Configure Apache DocumentRoot to Laravel's public folder
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+# Set ServerName to suppress warning
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Configure Apache to allow .htaccess override
-RUN echo '<Directory /var/www/html/public>\n\
+# Configure Apache Virtual Host for Laravel
+RUN echo '<VirtualHost *:80>\n\
+    ServerAdmin webmaster@localhost\n\
+    DocumentRoot /var/www/html/public\n\
+    \n\
+    <Directory /var/www/html/public>\n\
     Options Indexes FollowSymLinks\n\
     AllowOverride All\n\
     Require all granted\n\
-    </Directory>' > /etc/apache2/conf-available/laravel.conf \
-    && a2enconf laravel
-
-# Use PORT environment variable from Render
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
+    </Directory>\n\
+    \n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+    </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
@@ -49,17 +51,25 @@ WORKDIR /var/www/html
 # Copy composer files first (for Docker layer caching)
 COPY composer.json composer.lock ./
 
-# Install PHP dependencies
+# Install PHP dependencies (without scripts first)
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Copy application code
 COPY . /var/www/html
 
-# Run composer scripts after copying all files
+# Run post-install scripts
 RUN composer dump-autoload --optimize
 
 # Create SQLite database directory and file
-RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite
+RUN mkdir -p /var/www/html/database \
+    && touch /var/www/html/database/database.sqlite
+
+# Create storage directories if not exist
+RUN mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/storage/framework/cache \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && mkdir -p /var/www/html/bootstrap/cache
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
@@ -71,9 +81,8 @@ RUN chown -R www-data:www-data /var/www/html \
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Default port (Render will override with PORT env var)
-ENV PORT=80
-EXPOSE ${PORT}
+# Expose port 80
+EXPOSE 80
 
 # Use entrypoint for initialization
 ENTRYPOINT ["docker-entrypoint.sh"]
