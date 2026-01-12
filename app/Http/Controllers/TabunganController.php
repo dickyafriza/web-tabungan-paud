@@ -13,6 +13,147 @@ use App\Exports\TabunganSiswaExport;
 
 class TabunganController extends Controller
 {
+    // ========================================================================
+    // API ENDPOINTS - With Pagination, Filtering, Sorting
+    // ========================================================================
+    
+    /**
+     * API: Get all tabungan with pagination, filtering, and sorting
+     * 
+     * Pagination: ?page=1&per_page=10
+     * Filtering: ?siswa_id=1&tipe=in
+     * Search: ?search=keyword
+     * Sorting: ?sort_by=created_at&order=desc
+     * Date Range: ?start_date=2026-01-01&end_date=2026-01-31
+     */
+    public function apiIndex(Request $request)
+    {
+        $query = Tabungan::with(['siswa', 'siswa.kelas']);
+
+        // Apply filters (siswa_id, tipe)
+        $query = \App\Helper\QueryHelper::applyFilters($query, $request, [
+            'siswa_id', 'tipe'
+        ]);
+
+        // Apply search (keperluan)
+        if ($request->has('search') && $request->search) {
+            $query->where('keperluan', 'like', '%' . $request->search . '%');
+        }
+
+        // Apply date range filter
+        $query = \App\Helper\QueryHelper::applyDateRange($query, $request, 'created_at');
+
+        // Apply sorting (default: created_at desc)
+        $sortBy = $request->get('sort_by', 'created_at');
+        $order = $request->get('order', 'desc');
+        
+        // Validate order
+        if (!in_array(strtolower($order), ['asc', 'desc'])) {
+            $order = 'desc';
+        }
+        $query->orderBy($sortBy, $order);
+
+        // Pagination with custom per_page
+        $perPage = $request->get('per_page', 10);
+        $perPage = min($perPage, 100); // Max 100 per page
+        
+        $tabungan = $query->paginate($perPage);
+
+        return response()->json([
+            'data' => $tabungan->items(),
+            'meta' => [
+                'current_page' => $tabungan->currentPage(),
+                'last_page' => $tabungan->lastPage(),
+                'per_page' => $tabungan->perPage(),
+                'total' => $tabungan->total(),
+                'from' => $tabungan->firstItem(),
+                'to' => $tabungan->lastItem(),
+            ],
+            'links' => [
+                'first' => $tabungan->url(1),
+                'last' => $tabungan->url($tabungan->lastPage()),
+                'prev' => $tabungan->previousPageUrl(),
+                'next' => $tabungan->nextPageUrl(),
+            ]
+        ]);
+    }
+
+    /**
+     * API: Get single tabungan by ID
+     */
+    public function apiShow($id)
+    {
+        $tabungan = Tabungan::with(['siswa', 'siswa.kelas'])->find($id);
+        
+        if (!$tabungan) {
+            return response()->json(['message' => 'Tabungan tidak ditemukan'], 404);
+        }
+
+        return response()->json(['data' => $tabungan]);
+    }
+
+    /**
+     * API: Create new tabungan transaction
+     */
+    public function apiStore(Request $request)
+    {
+        $request->validate([
+            'siswa_id' => 'required|exists:siswa,id',
+            'jumlah' => 'required',
+            'tipe' => 'required|in:in,out',
+            'keperluan' => 'nullable|string'
+        ]);
+
+        $siswa = Siswa::find($request->siswa_id);
+        return $this->menabung($request, $siswa);
+    }
+
+    /**
+     * API: Update tabungan (limited - mainly for keperluan/notes)
+     */
+    public function apiUpdate(Request $request, $id)
+    {
+        $tabungan = Tabungan::find($id);
+        
+        if (!$tabungan) {
+            return response()->json(['message' => 'Tabungan tidak ditemukan'], 404);
+        }
+
+        $request->validate([
+            'keperluan' => 'nullable|string'
+        ]);
+
+        $tabungan->keperluan = $request->keperluan;
+        $tabungan->save();
+
+        return response()->json([
+            'message' => 'Tabungan berhasil diupdate',
+            'data' => $tabungan
+        ]);
+    }
+
+    /**
+     * API: Delete tabungan
+     */
+    public function apiDestroy($id)
+    {
+        $tabungan = Tabungan::find($id);
+        
+        if (!$tabungan) {
+            return response()->json(['message' => 'Tabungan tidak ditemukan'], 404);
+        }
+
+        if ($tabungan->delete()) {
+            return response()->json(['message' => 'Tabungan berhasil dihapus']);
+        }
+
+        return response()->json(['message' => 'Gagal menghapus tabungan'], 500);
+    }
+
+    // ========================================================================
+    // WEB ENDPOINTS
+    // ========================================================================
+
     public function index(Request $request)
     {
         $siswa = Siswa::orderBy('created_at', 'desc')->get();

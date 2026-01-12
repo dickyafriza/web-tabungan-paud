@@ -14,6 +14,106 @@ use App\Models\Tagihan;
 
 class SiswaController extends Controller
 {
+    // ========================================================================
+    // API ENDPOINTS - With Pagination, Filtering, Sorting
+    // ========================================================================
+    
+    /**
+     * API: Get all siswa with pagination, filtering, search, and sorting
+     * 
+     * Pagination: ?page=1&per_page=10
+     * Filtering: ?kelas_id=1&jenis_kelamin=L&is_yatim=0
+     * Search: ?search=Ahmad (searches in nama, nama_wali, alamat)
+     * Sorting: ?sort_by=nama&order=asc
+     */
+    public function apiIndex(Request $request)
+    {
+        $query = Siswa::with('kelas');
+
+        // Apply filters (kelas_id, jenis_kelamin, is_yatim)
+        $query = \App\Helper\QueryHelper::applyFilters($query, $request, [
+            'kelas_id', 'jenis_kelamin', 'is_yatim'
+        ]);
+
+        // Apply search (nama, nama_wali, alamat)
+        $query = \App\Helper\QueryHelper::applySearch($query, $request, [
+            'nama', 'nama_wali', 'alamat'
+        ]);
+
+        // Apply sorting
+        $sortBy = $request->get('sort_by', 'created_at');
+        $order = $request->get('order', 'desc');
+        
+        // Validate order
+        if (!in_array(strtolower($order), ['asc', 'desc'])) {
+            $order = 'desc';
+        }
+        $query->orderBy($sortBy, $order);
+
+        // Pagination with custom per_page
+        $perPage = $request->get('per_page', 10);
+        $perPage = min($perPage, 100); // Max 100 per page
+        
+        $siswa = $query->paginate($perPage);
+
+        // Add saldo for each siswa
+        $data = $siswa->getCollection()->map(function ($item) {
+            $input = Tabungan::where('tipe', 'in')->where('siswa_id', $item->id)->sum('jumlah');
+            $output = Tabungan::where('tipe', 'out')->where('siswa_id', $item->id)->sum('jumlah');
+            $item->saldo = $input - $output;
+            $item->saldo_formatted = format_idr($input - $output);
+            return $item;
+        });
+
+        return response()->json([
+            'data' => $data,
+            'meta' => [
+                'current_page' => $siswa->currentPage(),
+                'last_page' => $siswa->lastPage(),
+                'per_page' => $siswa->perPage(),
+                'total' => $siswa->total(),
+                'from' => $siswa->firstItem(),
+                'to' => $siswa->lastItem(),
+            ],
+            'links' => [
+                'first' => $siswa->url(1),
+                'last' => $siswa->url($siswa->lastPage()),
+                'prev' => $siswa->previousPageUrl(),
+                'next' => $siswa->nextPageUrl(),
+            ]
+        ]);
+    }
+
+    /**
+     * API: Get single siswa by ID with saldo
+     */
+    public function apiShow($id)
+    {
+        $siswa = Siswa::with('kelas')->find($id);
+        
+        if (!$siswa) {
+            return response()->json(['message' => 'Siswa tidak ditemukan'], 404);
+        }
+
+        // Calculate saldo
+        $input = Tabungan::where('tipe', 'in')->where('siswa_id', $siswa->id)->sum('jumlah');
+        $output = Tabungan::where('tipe', 'out')->where('siswa_id', $siswa->id)->sum('jumlah');
+        $siswa->saldo = $input - $output;
+        $siswa->saldo_formatted = format_idr($input - $output);
+
+        // Get recent transactions
+        $siswa->recent_tabungan = Tabungan::where('siswa_id', $siswa->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return response()->json(['data' => $siswa]);
+    }
+
+    // ========================================================================
+    // WEB ENDPOINTS
+    // ========================================================================
+
     /**
      * Display a listing of the resource.
      *
