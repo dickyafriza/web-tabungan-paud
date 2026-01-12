@@ -1,4 +1,4 @@
-# Dockerfile for Render.com and production deployment
+# Dockerfile for Render.com deployment
 FROM php:8.2-apache
 
 # Install system dependencies
@@ -24,12 +24,12 @@ RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite zip exif pcntl bcmath gd
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Configure Apache DocumentRoot to Laravel's public folder
+# Configure Apache DocumentRoot
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Configure Apache to allow .htaccess override
+# Configure Apache to allow .htaccess
 RUN echo '<Directory /var/www/html/public>\n\
     Options Indexes FollowSymLinks\n\
     AllowOverride All\n\
@@ -37,26 +37,17 @@ RUN echo '<Directory /var/www/html/public>\n\
     </Directory>' > /etc/apache2/conf-available/laravel.conf \
     && a2enconf laravel
 
-# Use PORT environment variable from Render
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
-
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files first (for Docker layer caching)
-COPY composer.json composer.lock ./
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
-
 # Copy application code
 COPY . /var/www/html
 
-# Run composer scripts after copying all files
-RUN composer dump-autoload --optimize
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Create SQLite database directory and file
 RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite
@@ -67,13 +58,12 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/bootstrap/cache \
     && chmod -R 755 /var/www/html/database
 
-# Copy and set entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Generate app key if not exists and run migrations
+RUN php artisan config:clear || true
+RUN php artisan key:generate --force || true
 
-# Default port (Render will override with PORT env var)
-ENV PORT=80
-EXPOSE ${PORT}
+# Expose port (Render uses PORT env variable)
+EXPOSE 80
 
-# Use entrypoint for initialization
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Start Apache
+CMD ["apache2-foreground"]

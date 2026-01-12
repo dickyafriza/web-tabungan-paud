@@ -15,6 +15,16 @@ use App\Http\Controllers\Api\AuthController;
 |
 */
 
+// Health Check Endpoint (for Render.com and monitoring)
+Route::get('health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now()->toISOString(),
+        'app' => config('app.name'),
+        'version' => '1.0.0'
+    ]);
+});
+
 // JWT Authentication Routes
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [AuthController::class, 'login']);
